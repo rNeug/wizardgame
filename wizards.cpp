@@ -18,21 +18,21 @@ void Wizards::create(GLuint program, int quantity) {
   m_wizards.clear();
   m_wizards.resize(quantity);
 
-  for (auto &wizards : m_wizards) {
-    wizards = makeWizards();
+  for (auto &wizard : m_wizards) {
+    wizard = makeWizard();
 
     do {
-      Wizard.m_translation = {m_randomDist(m_randomEngine),
+      wizard.m_translation = {m_randomDist(m_randomEngine),
                                 m_randomDist(m_randomEngine)};
-    } while (glm::length(Wizard.m_translation) < 0.5f);
+    } while (glm::length(wizard.m_translation) < 0.5f);
   }
 }
 
 void Wizards::paint() {
   abcg::glUseProgram(m_program);
 
-  for (auto const &wizards : m_wizards) {
-    abcg::glBindVertexArray(Wizard.m_VAO);
+  for (auto const &wizard : m_wizards) {
+    abcg::glBindVertexArray(wizard.m_VAO);
 
     abcg::glUniform4fv(m_colorLoc, 1, &wizard.m_color.r);
     abcg::glUniform1f(m_scaleLoc, wizard.m_scale);
@@ -54,32 +54,32 @@ void Wizards::paint() {
 }
 
 void Wizards::destroy() {
-  for (auto &wizards : m_wizards) {
-    abcg::glDeleteBuffers(1, &wizards.m_VBO);
-    abcg::glDeleteVertexArrays(1, &wizards.m_VAO);
+  for (auto &wizard : m_wizards) {
+    abcg::glDeleteBuffers(1, &wizard.m_VBO);
+    abcg::glDeleteVertexArrays(1, &wizard.m_VAO);
   }
 }
 
 void Wizards::update(const HP &hp, float deltaTime) {
   for (auto &wizard : m_wizards) {
-    wizard.m_translationLoc -= hp.m_velocity * deltaTime;
-    wizard.m_rotationLoc = glm::wrapAngle(
-        wizard.m_rotationLoc + wizard.m_angularVelocity * deltaTime);
-    wizard.m_translationLoc += wizard.m_velocity * deltaTime;
+    wizard.m_translation -= hp.m_velocity * deltaTime;
+    wizard.m_rotation = glm::wrapAngle(
+        wizard.m_rotation + wizard.m_angularVelocity * deltaTime);
+    wizard.m_translation += wizard.m_velocity * deltaTime;
 
     // Wrap-around
-    if (wizard.m_translationLoc.x < -1.0f)
-      wizard.m_translationLoc.x += 2.0f;
-    if (wizard.m_translationLoc.x > +1.0f)
-      wizard.m_translationLoc.x -= 2.0f;
-    if (wizard.m_translationLoc.y < -1.0f)
-      wizard.m_translationLoc.y += 2.0f;
-    if (wizard.m_translationLoc.y > +1.0f)
-      wizard.m_translationLoc.y -= 2.0f;
+    if (wizard.m_translation.x < -1.0f)
+      wizard.m_translation.x += 2.0f;
+    if (wizard.m_translation.x > +1.0f)
+      wizard.m_translation.x -= 2.0f;
+    if (wizard.m_translation.y < -1.0f)
+      wizard.m_translation.y += 2.0f;
+    if (wizard.m_translation.y > +1.0f)
+      wizard.m_translation.y -= 2.0f;
   }
 }
 
-Wizards::Wizard Wizards::makeWizards(glm::vec2 translation, float scale) {
+Wizards::Wizard Wizards::makeWizard(glm::vec2 translation, float scale) {
   Wizard wizards;
 
   auto &re{m_randomEngine}; // Shortcut
@@ -142,7 +142,7 @@ Wizards::Wizard Wizards::makeWizards(glm::vec2 translation, float scale) {
 
   // Generate VBO
   abcg::glGenBuffers(1, &wizards.m_VBO);
-  abcg::glBindBuffer(GL_ARRAY_BUFFER, Wizards.m_VBO);
+  abcg::glBindBuffer(GL_ARRAY_BUFFER, wizards.m_VBO);
   abcg::glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec2),
                      positions.data(), GL_STATIC_DRAW);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);

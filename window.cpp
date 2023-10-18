@@ -190,12 +190,12 @@ void Window::onDestroy() {
 
 void Window::checkCollisions() {
   // Check collision between ship and asteroids
-  for (auto const &wizards : m_wizards.m_wizards) {
-    auto const wizardsTranslation{wizards.m_translation};
+  for (auto const &wizard : m_wizards.m_wizards) {
+    auto const wizardsTranslation{wizard.m_translation};
     auto const distance{
         glm::distance(m_hp.m_translation, wizardsTranslation)};
 
-    if (distance < m_hp.m_scale * 0.9f + wizards.m_scale * 0.85f) {
+    if (distance < m_hp.m_scale * 0.9f + wizard.m_scale * 0.85f) {
       m_gameData.m_state = State::GameOver;
       m_restartWaitTimer.restart();
     }
@@ -205,16 +205,16 @@ void Window::checkCollisions() {
     if (spells.m_dead)
       continue;
 
-    for (auto &wizards : m_wizards.m_wizards) {
+    for (auto &wizard : m_wizards.m_wizards) {
       for (auto const i : {-2, 0, 2}) {
         for (auto const j : {-2, 0, 2}) {
-          auto const wizardsTranslation{wizards.m_translation +
+          auto const wizardsTranslation{wizard.m_translation +
                                          glm::vec2(i, j)};
           auto const distance{
               glm::distance(spells.m_translation, wizardsTranslation)};
 
-          if (distance < m_spells.m_scale + Wizards.m_scale * 0.85f) {
-            wizards.m_hit = true;
+          if (distance < m_spells.m_scale + wizard.m_scale * 0.85f) {
+            wizard.m_hit = true;
             spells.m_dead = true;
           }
         }
@@ -222,15 +222,15 @@ void Window::checkCollisions() {
     }
 
     // Break asteroids marked as hit
-    for (auto const &wizards : m_wizards.m_wizards) {
-      if (wizards.m_hit && wizards.m_scale > 0.10f) {
+    for (auto const &wizard : m_wizards.m_wizards) {
+      if (wizard.m_hit && wizard.m_scale > 0.10f) {
         std::uniform_real_distribution randomDist{-1.0f, 1.0f};
         std::generate_n(std::back_inserter(m_wizards.m_wizards), 3, [&]() {
           glm::vec2 const offset{randomDist(m_randomEngine),
                                  randomDist(m_randomEngine)};
-          auto const newScale{wizards.m_scale * 0.5f};
-          return m_wizards.makeWizards(
-              wizards.m_translation + offset * newScale, newScale);
+          auto const newScale{wizard.m_scale * 0.5f};
+          return m_wizards.makeWizard(
+              wizard.m_translation + offset * newScale, newScale);
         });
       }
     }

@@ -30,9 +30,9 @@ public:
     glm::vec2 m_velocity{};
   };
 
-  std::list<Wizards> m_wizards;
+  std::list<Wizard> m_wizards;
 
-  Wizard makeWizards(glm::vec2 translation = {}, float scale = 0.25f);
+  Wizard makeWizard(glm::vec2 translation = {}, float scale = 0.25f);
 
 private:
   GLuint m_program{};

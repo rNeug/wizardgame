@@ -19,7 +19,7 @@ public:
   glm::vec2 m_velocity{};
 
   abcg::Timer m_trailBlinkTimer;
-  abcg::Timer m_bulletCoolDownTimer;
+  abcg::Timer m_spellsCoolDownTimer;
 
 private:
   GLuint m_program{};
